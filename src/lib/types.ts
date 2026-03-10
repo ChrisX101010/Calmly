@@ -2,10 +2,19 @@ export interface Task {
   _id?: string;
   id: string;
   text: string;
-  dateKey: string; // "YYYY-MM-DD"
+  dateKey: string;
   order: number;
   createdAt: string;
+  time?: string;
+  isMeeting?: boolean;
+  notes?: string;
+  label?: TaskLabel;
+  meetingLink?: string;
 }
+
+export type TaskLabel =
+  | "work" | "personal" | "health" | "finance"
+  | "social" | "creative" | "urgent" | "travel" | null;
 
 export interface Holiday {
   date: string;

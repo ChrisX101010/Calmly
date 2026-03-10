@@ -31,6 +31,11 @@ export async function GET(request: NextRequest) {
         dateKey: t.dateKey,
         order: t.order,
         createdAt: t.createdAt,
+        time: t.time,
+        isMeeting: t.isMeeting,
+        notes: t.notes,
+        label: t.label,
+        meetingLink: t.meetingLink,
       };
       if (!grouped[t.dateKey]) grouped[t.dateKey] = [];
       grouped[t.dateKey].push(task);
@@ -49,17 +54,22 @@ export async function POST(request: NextRequest) {
     const { db } = await connectToDatabase();
     const body = await request.json();
 
-    const { text, dateKey, order } = body;
+    const { text, dateKey, order, time, isMeeting, notes, label, meetingLink } = body;
     if (!text || !dateKey) {
       return NextResponse.json({ error: "text and dateKey are required" }, { status: 400 });
     }
 
-    const doc = {
+    const doc: Record<string, unknown> = {
       text: text.trim(),
       dateKey,
       order: order ?? 0,
       createdAt: new Date().toISOString(),
     };
+    if (time) doc.time = time;
+    if (isMeeting) doc.isMeeting = true;
+    if (notes) doc.notes = notes;
+    if (label) doc.label = label;
+    if (meetingLink) doc.meetingLink = meetingLink;
 
     const result = await db.collection("tasks").insertOne(doc);
 
@@ -95,6 +105,8 @@ export async function PUT(request: NextRequest) {
             text: t.text,
             dateKey: t.dateKey,
             order: t.order,
+            ...(t.time !== undefined && { time: t.time }),
+            ...(t.isMeeting !== undefined && { isMeeting: t.isMeeting }),
           },
         },
       },

@@ -258,8 +258,8 @@ interface CellProps {
 
 export const Cell = styled.div<CellProps>`
   background: ${(p) => (p.$isEmpty ? theme.bgCellEmpty : theme.bgCell)};
-  min-height: 115px;
-  padding: 6px;
+  min-height: 125px;
+  padding: 5px;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -268,18 +268,22 @@ export const Cell = styled.div<CellProps>`
   overflow: hidden;
   animation: ${fadeIn} 0.25s ease both;
 
+  /* Subtle whiteboard texture */
+  background-image: ${(p) => p.$isEmpty ? "none" : "radial-gradient(circle at 50% 50%, rgba(148,163,184,0.02) 1px, transparent 1px)"};
+  background-size: 12px 12px;
+
   ${(p) =>
     p.$isToday &&
     css`
-      background: rgba(99, 102, 241, 0.06);
+      background-color: rgba(99, 102, 241, 0.06);
       border-top: 2px solid ${theme.accent};
     `}
 
   ${(p) =>
     p.$isDragOver &&
     css`
-      background: rgba(99, 102, 241, 0.12);
-      box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.4);
+      background-color: rgba(99, 102, 241, 0.1);
+      box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.35);
     `}
 `;
 
@@ -291,6 +295,12 @@ export const DayNumber = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 10;
+  background: inherit;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+  flex-shrink: 0;
 `;
 
 export const TodayBadge = styled.span`
@@ -339,17 +349,148 @@ export const HolidayTag = styled.div`
   text-overflow: ellipsis;
 `;
 
-/* ── Tasks ─────────────────────────────────────────────────────────────────── */
+/* ── Tasks (Sticky Note Whiteboard Style) ─────────────────────────────────── */
 export const TaskList = styled.div`
   flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex-wrap: wrap;
+  gap: 0px;
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: 90px;
+  max-height: 95px;
+  padding: 1px;
+  position: relative;
 `;
 
+/* Color palette for sticky notes - warm paper tones */
+export const STICKY_COLORS = [
+  { bg: "#FEF9C3", shadow: "#EAB308", text: "#713F12" },  // yellow
+  { bg: "#DBEAFE", shadow: "#3B82F6", text: "#1E3A5F" },  // blue
+  { bg: "#FCE7F3", shadow: "#EC4899", text: "#831843" },  // pink
+  { bg: "#D1FAE5", shadow: "#10B981", text: "#064E3B" },  // green
+  { bg: "#EDE9FE", shadow: "#8B5CF6", text: "#3B0764" },  // purple
+  { bg: "#FFEDD5", shadow: "#F97316", text: "#7C2D12" },  // orange
+];
+
+interface StickyNoteProps {
+  $bgColor: string;
+  $shadowColor: string;
+  $textColor: string;
+  $rotation: number;
+  $isDragging?: boolean;
+  $index: number;
+}
+
+export const StickyNote = styled.div<StickyNoteProps>`
+  width: calc(50% - 2px);
+  min-height: 28px;
+  max-height: 44px;
+  padding: 4px 6px;
+  border-radius: 1px 1px 1px 8px;
+  background: ${(p) => p.$isDragging ? "rgba(99,102,241,0.3)" : p.$bgColor};
+  color: ${(p) => p.$textColor};
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  opacity: ${(p) => p.$isDragging ? 0.5 : 1};
+  user-select: none;
+  line-height: 1.25;
+  font-weight: 500;
+  font-size: 9px;
+  font-family: 'DM Sans', sans-serif;
+  position: relative;
+  transform: rotate(${(p) => p.$rotation}deg);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.1s;
+  box-shadow:
+    1px 1px 2px rgba(0,0,0,0.15),
+    inset 0 -1px 0 ${(p) => p.$shadowColor}22;
+  z-index: ${(p) => p.$index + 1};
+  overflow: hidden;
+  margin: 1px;
+
+  /* Tape / pin effect at top */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 3px;
+    background: ${(p) => p.$shadowColor}40;
+    border-radius: 0 0 2px 2px;
+  }
+
+  &:hover {
+    transform: rotate(0deg) scale(1.05);
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.25);
+    z-index: 20;
+  }
+
+  &:active {
+    cursor: grabbing;
+    transform: rotate(0deg) scale(1.08);
+    z-index: 30;
+    box-shadow: 3px 5px 12px rgba(0,0,0,0.3);
+  }
+`;
+
+export const StickyNoteText = styled.span`
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 9px;
+  line-height: 1.2;
+`;
+
+export const StickyNoteRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+`;
+
+export const StickyNoteActions = styled.span`
+  display: flex;
+  gap: 1px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+
+  ${StickyNote}:hover & {
+    opacity: 0.8;
+  }
+`;
+
+export const StickyTinyBtn = styled.button`
+  background: rgba(0,0,0,0.08);
+  border: none;
+  cursor: pointer;
+  font-size: 8px;
+  padding: 1px 3px;
+  line-height: 1;
+  color: inherit;
+  font-family: inherit;
+  border-radius: 2px;
+
+  &:hover {
+    background: rgba(0,0,0,0.15);
+  }
+`;
+
+export const StickyLimitMsg = styled.div`
+  font-size: 8px;
+  color: #64748B;
+  text-align: center;
+  padding: 2px;
+  width: 100%;
+`;
+
+/* Keep old TaskCard for backward compat but rename */
 interface TaskCardProps {
   $bgColor: string;
   $borderColor: string;
@@ -374,10 +515,7 @@ export const TaskCard = styled.div<TaskCardProps>`
   user-select: none;
   line-height: 1.3;
   font-weight: 500;
-
-  &:active {
-    cursor: grabbing;
-  }
+  &:active { cursor: grabbing; }
 `;
 
 export const TaskText = styled.span`
@@ -428,10 +566,12 @@ export const InlineInput = styled.input`
 `;
 
 export const DragPlaceholder = styled.div`
-  height: 3px;
+  width: calc(50% - 2px);
+  height: 28px;
   border-radius: 2px;
-  background: linear-gradient(90deg, ${theme.accent}, ${theme.accentSoft});
-  margin: 1px 0;
+  border: 2px dashed rgba(99,102,241,0.4);
+  background: rgba(99,102,241,0.06);
+  margin: 1px;
   transition: all 0.15s ease;
 `;
 
@@ -531,3 +671,65 @@ export const ModalHint = styled.div`
 export const HiddenFileInput = styled.input`
   display: none;
 `;
+
+/* ── Meeting Task Styles ──────────────────────────────────────────────────── */
+export const MeetingBadge = styled.span`
+  font-size: 9px;
+  font-weight: 700;
+  color: ${theme.accent};
+  background: rgba(99, 102, 241, 0.15);
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-right: 4px;
+  flex-shrink: 0;
+`;
+
+export const TimeInput = styled.input`
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  background: rgba(99, 102, 241, 0.08);
+  color: ${theme.text};
+  outline: none;
+  width: 62px;
+  font-family: inherit;
+  box-sizing: border-box;
+  flex-shrink: 0;
+`;
+
+export const MeetingToggle = styled.button<{ $active: boolean }>`
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid ${(p: { $active: boolean }) => p.$active ? "rgba(99,102,241,0.5)" : "rgba(148,163,184,0.2)"};
+  background: ${(p: { $active: boolean }) => p.$active ? "rgba(99,102,241,0.15)" : "transparent"};
+  color: ${(p: { $active: boolean }) => p.$active ? theme.accent : theme.textDim};
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: ${theme.accent};
+  }
+`;
+
+export const AddTaskRow = styled.div`
+  display: flex;
+  gap: 3px;
+  align-items: center;
+`;
+
+export const LabelBadge = styled.span<{ $color: string }>`
+  font-size: 8px;
+  font-weight: 700;
+  color: ${(p: { $color: string }) => p.$color};
+  background: ${(p: { $color: string }) => p.$color}18;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-right: 3px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+`;
+
