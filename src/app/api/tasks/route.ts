@@ -59,23 +59,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "text and dateKey are required" }, { status: 400 });
     }
 
-    const doc: Record<string, unknown> = {
+    // Build document with all optional fields
+    const doc = {
       text: text.trim(),
       dateKey,
       order: order ?? 0,
       createdAt: new Date().toISOString(),
+      ...(time && { time }),
+      ...(isMeeting && { isMeeting: true }),
+      ...(notes && { notes }),
+      ...(label && { label }),
+      ...(meetingLink && { meetingLink }),
     };
-    if (time) doc.time = time;
-    if (isMeeting) doc.isMeeting = true;
-    if (notes) doc.notes = notes;
-    if (label) doc.label = label;
-    if (meetingLink) doc.meetingLink = meetingLink;
 
     const result = await db.collection("tasks").insertOne(doc);
 
+    // Construct full task object including the generated id
     const task: Task = {
       id: result.insertedId.toString(),
-      ...doc,
+      text: doc.text,
+      dateKey: doc.dateKey,
+      order: doc.order,
+      createdAt: doc.createdAt,
+      time: doc.time,
+      isMeeting: doc.isMeeting,
+      notes: doc.notes,
+      label: doc.label,
+      meetingLink: doc.meetingLink,
     };
 
     return NextResponse.json(task, { status: 201 });
