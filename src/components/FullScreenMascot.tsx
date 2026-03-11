@@ -170,6 +170,7 @@ const CatSVG = styled.div`
   width: 280px;
   height: 280px;
   filter: drop-shadow(0 20px 60px rgba(0,0,0,0.5));
+  @media(max-width:480px){width:180px;height:180px;}
 `;
 
 const Title = styled.h1<{ $color: string }>`
@@ -180,6 +181,7 @@ const Title = styled.h1<{ $color: string }>`
   letter-spacing: -0.02em;
   margin: 0;
   text-shadow: 0 2px 20px ${(p) => p.$color}44;
+  @media(max-width:480px){font-size:22px;}
 `;
 
 const Subtitle = styled.p`
@@ -188,6 +190,7 @@ const Subtitle = styled.p`
   text-align: center;
   margin: 0;
   font-weight: 500;
+  @media(max-width:480px){font-size:13px;}
 `;
 
 const TaskName = styled.div<{ $color: string }>`
@@ -200,12 +203,14 @@ const TaskName = styled.div<{ $color: string }>`
   padding: 10px 24px;
   text-align: center;
   max-width: 400px;
+  @media(max-width:480px){font-size:14px;padding:8px 16px;max-width:280px;}
 `;
 
 const TimeInfo = styled.div`
   font-size: 14px;
   color: #64748B;
   font-weight: 600;
+  @media(max-width:480px){font-size:12px;}
 `;
 
 const DismissBtn = styled.button<{ $color: string }>`
@@ -226,6 +231,8 @@ const DismissBtn = styled.button<{ $color: string }>`
     transform: scale(1.05);
     box-shadow: 0 8px 30px ${(p) => p.$color}55;
   }
+
+  @media(max-width:480px){padding:12px 32px;font-size:14px;}
 `;
 
 // Particle elements

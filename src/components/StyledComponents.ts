@@ -43,16 +43,26 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+
   body {
     font-family: 'DM Sans', 'Segoe UI', sans-serif;
     background: linear-gradient(145deg, ${theme.bg} 0%, ${theme.bgSecondary} 50%, ${theme.bg} 100%);
     color: ${theme.text};
     min-height: 100vh;
+    min-height: -webkit-fill-available;
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+    overflow-x: hidden;
   }
 
   ::-webkit-scrollbar {
     width: 4px;
+    height: 4px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
@@ -60,6 +70,17 @@ export const GlobalStyles = createGlobalStyle`
   ::-webkit-scrollbar-thumb {
     background: ${theme.borderLight};
     border-radius: 4px;
+  }
+
+  /* Prevent iOS zoom on input focus */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  @media (min-width: 768px) {
+    input, select, textarea {
+      font-size: inherit !important;
+    }
   }
 `;
 
@@ -94,7 +115,12 @@ export const Header = styled.header`
   top: 0;
   z-index: 100;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
+
+  @media (max-width: 768px) {
+    padding: 10px 12px;
+    gap: 8px;
+  }
 `;
 
 export const Brand = styled.div`
@@ -126,6 +152,10 @@ export const AppTitle = styled.h1`
   letter-spacing: -0.02em;
   color: ${theme.textBright};
   line-height: 1.2;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
 `;
 
 export const TaskCounter = styled.div`
@@ -139,6 +169,13 @@ export const Nav = styled.nav`
   display: flex;
   align-items: center;
   gap: 6px;
+
+  @media (max-width: 768px) {
+    gap: 4px;
+    order: -1;
+    width: 100%;
+    justify-content: center;
+  }
 `;
 
 export const NavButton = styled.button`
@@ -157,6 +194,12 @@ export const NavButton = styled.button`
     background: rgba(148, 163, 184, 0.15);
     color: ${theme.textBright};
   }
+
+  @media (max-width: 768px) {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-height: 34px;
+  }
 `;
 
 export const MonthLabel = styled.span`
@@ -166,6 +209,11 @@ export const MonthLabel = styled.span`
   text-align: center;
   color: ${theme.textBright};
   letter-spacing: -0.01em;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    min-width: 130px;
+  }
 `;
 
 /* ── Toolbar ──────────────────────────────────────────────────────────────── */
@@ -174,6 +222,12 @@ export const Toolbar = styled.div`
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: center;
+    gap: 4px;
+  }
 `;
 
 export const SearchWrapper = styled.div`
@@ -211,6 +265,16 @@ export const SearchInput = styled.input`
   &::placeholder {
     color: ${theme.textDim};
   }
+
+  @media (max-width: 768px) {
+    width: 140px;
+    padding: 6px 10px 6px 30px;
+    font-size: 12px;
+  }
+
+  @media (max-width: 480px) {
+    width: 110px;
+  }
 `;
 
 export const CountrySelect = styled.select`
@@ -228,6 +292,12 @@ export const CountrySelect = styled.select`
     background: ${theme.bgSecondary};
     color: ${theme.text};
   }
+
+  @media (max-width: 768px) {
+    padding: 6px 8px;
+    font-size: 12px;
+    max-width: 120px;
+  }
 `;
 
 /* ── Calendar Grid ────────────────────────────────────────────────────────── */
@@ -237,6 +307,12 @@ export const Grid = styled.div`
   gap: 1px;
   background: ${theme.borderLight};
   flex: 1;
+
+  @media (max-width: 768px) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    min-width: 100%;
+  }
 `;
 
 export const DayHeader = styled.div`
@@ -248,6 +324,12 @@ export const DayHeader = styled.div`
   letter-spacing: 0.08em;
   color: ${theme.textDim};
   background: rgba(15, 23, 42, 0.9);
+
+  @media (max-width: 768px) {
+    padding: 6px 2px;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+  }
 `;
 
 interface CellProps {
@@ -267,8 +349,6 @@ export const Cell = styled.div<CellProps>`
   cursor: default;
   overflow: hidden;
   animation: ${fadeIn} 0.25s ease both;
-
-  /* Subtle whiteboard texture */
   background-image: ${(p) => p.$isEmpty ? "none" : "radial-gradient(circle at 50% 50%, rgba(148,163,184,0.02) 1px, transparent 1px)"};
   background-size: 12px 12px;
 
@@ -285,6 +365,16 @@ export const Cell = styled.div<CellProps>`
       background-color: rgba(99, 102, 241, 0.1);
       box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.35);
     `}
+
+  @media (max-width: 768px) {
+    min-height: 85px;
+    padding: 3px;
+  }
+
+  @media (max-width: 480px) {
+    min-height: 70px;
+    padding: 2px;
+  }
 `;
 
 export const DayNumber = styled.div`
@@ -301,6 +391,12 @@ export const DayNumber = styled.div`
   padding-bottom: 2px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.06);
   flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+    margin-bottom: 2px;
+    padding-bottom: 1px;
+  }
 `;
 
 export const TodayBadge = styled.span`
@@ -314,6 +410,12 @@ export const TodayBadge = styled.span`
   justify-content: center;
   font-size: 11px;
   font-weight: 800;
+
+  @media (max-width: 768px) {
+    width: 18px;
+    height: 18px;
+    font-size: 9px;
+  }
 `;
 
 export const AddButton = styled.button`
@@ -331,6 +433,16 @@ export const AddButton = styled.button`
   &:hover {
     color: ${theme.accent};
   }
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    padding: 2px 4px;
+    min-width: 20px;
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
 /* ── Holidays ─────────────────────────────────────────────────────────────── */
@@ -347,6 +459,12 @@ export const HolidayTag = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @media (max-width: 768px) {
+    font-size: 7px;
+    padding: 1px 3px;
+    margin-bottom: 2px;
+  }
 `;
 
 /* ── Tasks (Sticky Note Whiteboard Style) ─────────────────────────────────── */
@@ -360,6 +478,14 @@ export const TaskList = styled.div`
   max-height: 95px;
   padding: 1px;
   position: relative;
+
+  @media (max-width: 768px) {
+    max-height: 55px;
+  }
+
+  @media (max-width: 480px) {
+    max-height: 42px;
+  }
 `;
 
 /* Color palette for sticky notes - warm paper tones */
@@ -408,8 +534,8 @@ export const StickyNote = styled.div<StickyNoteProps>`
   z-index: ${(p) => p.$index + 1};
   overflow: hidden;
   margin: 1px;
+  -webkit-touch-callout: none;
 
-  /* Tape / pin effect at top */
   &::before {
     content: '';
     position: absolute;
@@ -433,6 +559,25 @@ export const StickyNote = styled.div<StickyNoteProps>`
     transform: rotate(0deg) scale(1.08);
     z-index: 30;
     box-shadow: 3px 5px 12px rgba(0,0,0,0.3);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    min-height: 20px;
+    max-height: 28px;
+    padding: 2px 4px;
+    font-size: 7px;
+    margin: 0.5px 0;
+    transform: rotate(0deg);
+
+    &::before {
+      width: 10px;
+      height: 2px;
+    }
+
+    &:hover {
+      transform: none;
+    }
   }
 `;
 
@@ -563,6 +708,11 @@ export const InlineInput = styled.input`
   width: 100%;
   font-family: inherit;
   box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: 5px 6px;
+    font-size: 12px;
+  }
 `;
 
 export const DragPlaceholder = styled.div`
@@ -594,8 +744,16 @@ export const ModalBox = styled.div`
   padding: 28px;
   max-width: 460px;
   width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
   animation: ${slideUp} 0.25s ease both;
+
+  @media (max-width: 480px) {
+    padding: 18px;
+    border-radius: 12px;
+    width: 95%;
+  }
 `;
 
 export const ModalTitle = styled.h2`

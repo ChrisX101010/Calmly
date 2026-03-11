@@ -17,6 +17,11 @@ const ClockWrapper = styled.div`
   border: 1px solid rgba(148, 163, 184, 0.1);
   border-radius: 8px;
   font-variant-numeric: tabular-nums;
+
+  @media (max-width: 768px) {
+    padding: 4px 8px;
+    gap: 4px;
+  }
 `;
 
 const TimeDisplay = styled.span`
@@ -24,6 +29,7 @@ const TimeDisplay = styled.span`
   font-weight: 700;
   color: #E2E8F0;
   letter-spacing: 0.02em;
+  @media (max-width: 768px) { font-size: 12px; }
 `;
 
 const Separator = styled.span`
@@ -31,6 +37,7 @@ const Separator = styled.span`
   font-weight: 700;
   color: #6366F1;
   animation: ${tick} 1s ease-in-out infinite;
+  @media (max-width: 768px) { font-size: 12px; }
 `;
 
 const DateDisplay = styled.span`
@@ -43,6 +50,7 @@ const TzLabel = styled.span`
   font-size: 9px;
   color: #475569;
   font-weight: 600;
+  @media (max-width: 480px) { display: none; }
 `;
 
 export default function LiveClock() {

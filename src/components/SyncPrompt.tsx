@@ -26,6 +26,15 @@ const Wrap = styled.div`
   border: 1px solid rgba(148,163,184,0.15); border-radius: 18px;
   padding: 16px 22px; box-shadow: 0 12px 40px rgba(0,0,0,0.4);
   display: flex; align-items: center; gap: 14px; max-width: 520px; width: 90%;
+
+  @media(max-width:480px){
+    bottom: 10px;
+    width: 95%;
+    padding: 12px 14px;
+    gap: 10px;
+    border-radius: 14px;
+    flex-wrap: wrap;
+  }
 `;
 
 const Content = styled.div`flex: 1;`;

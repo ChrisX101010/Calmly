@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Task } from "@/lib/types";
 
-// GET /api/tasks
+// GET /api/tasks — Fetch all tasks (optionally filter by month: ?year=2024&month=3)
 export async function GET(request: NextRequest) {
   try {
     const { db } = await connectToDatabase();
@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
       .sort({ dateKey: 1, order: 1 })
       .toArray();
 
+    // Group by dateKey
     const grouped: Record<string, Task[]> = {};
     tasks.forEach((t) => {
       const task: Task = {
@@ -47,7 +48,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/tasks
+// POST /api/tasks — Create a new task
 export async function POST(request: NextRequest) {
   try {
     const { db } = await connectToDatabase();
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     const result = await db.collection("tasks").insertOne(doc);
 
-    const task = {
+    const task: Task = {
       id: result.insertedId.toString(),
       ...doc,
     };
@@ -84,7 +85,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/tasks — Bulk update
+// PUT /api/tasks — Bulk update (for drag-and-drop reorder/reassign)
 export async function PUT(request: NextRequest) {
   try {
     const { db } = await connectToDatabase();

@@ -54,6 +54,16 @@ const Panel = styled.div`
   overflow-y: auto; box-shadow: 0 25px 60px rgba(0,0,0,0.5);
   animation: ${slideUp} 0.35s ease both;
   display: flex; flex-direction: column;
+
+  @media(max-width:480px){
+    border-radius: 16px 16px 0 0;
+    max-height: 95vh;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
 `;
 
 const PanelHeader = styled.div`

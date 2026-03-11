@@ -46,8 +46,13 @@ const StatusBar = styled.div`
   padding:10px 20px;background:rgba(15,23,42,0.5);
   border-bottom:1px solid rgba(148,163,184,0.06);gap:16px;min-height:70px;
   flex-wrap:wrap;
+  @media(max-width:768px){padding:8px 12px;gap:10px;min-height:50px;}
+  @media(max-width:480px){padding:6px 8px;gap:8px;min-height:40px;}
 `;
-const StatusMessage = styled.div`font-size:13px;color:#94A3B8;font-weight:500;line-height:1.5;max-width:400px;`;
+const StatusMessage = styled.div`
+  font-size:13px;color:#94A3B8;font-weight:500;line-height:1.5;max-width:400px;
+  @media(max-width:768px){font-size:11px;max-width:220px;}
+`;
 const StatusHighlight = styled.span<{$color:string}>`color:${(p:{$color:string})=>p.$color};font-weight:700;`;
 const SoundToggle = styled.button<{$active:boolean}>`
   background:${(p:{$active:boolean})=>p.$active?"rgba(99,102,241,0.15)":"rgba(148,163,184,0.08)"};
@@ -58,6 +63,7 @@ const SoundToggle = styled.button<{$active:boolean}>`
 `;
 const HolidayMascotWrap = styled.div`
   display:flex;align-items:center;gap:4px;
+  @media(max-width:768px){gap:2px;}
 `;
 
 // -- API --
